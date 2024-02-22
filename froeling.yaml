@@ -56,11 +56,61 @@ switch:
 
 packages:
   remote_package:
-    url: https://github.com/GyroGearl00se/ESPHome-Froeling-Lambdatronic_3200
+    #url: https://github.com/GyroGearl00se/ESPHome-Froeling-Lambdatronic_3200
+    url: https://github.com/Matze5593/ESPHome-Froeling-Lambdatronic_3200
     ref: main
-    files: [austragung.yaml, boiler_01.yaml, heizkreis01.yaml, heizkreis02.yaml, kessel.yaml, puffer_01.yaml, zirkulationspumpe.yaml, solarthermie.yaml]
+    files: [
+      austragung.yaml,
+      boiler_01.yaml,
+      heizkreis01.yaml,
+      heizkreis02.yaml,
+      kessel.yaml,
+      puffer_01.yaml,
+      zirkulationspumpe.yaml,
+      solarthermie.yaml,
+      ]
+
     refresh: 1d
-    
+
+
+
+binary_sensor:
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO19
+
+
+sensor:
+  - platform: modbus_controller
+    modbus_controller_id: ${modbus_controller_id}
+    name: "${name} Aussentemperatur"
+    id: ${name}_Aussentemperatur
+    register_type: read
+    address: 1000
+    unit_of_measurement: "°C"
+    value_type: S_WORD
+    filters:
+      - multiply: 0.5
+
+# Zusatzbauteil Drucksensor zur Heizkreisüberwachung über ESP / kein froeling bauteil
+  - platform: adc
+    pin: GPIO36
+    id: sensor_pressure
+    name: "Pressure_Heizkreis"
+    attenuation: 11db
+    unit_of_measurement: "bar"  # Ändern Sie die Einheit auf Bar
+    state_class: measurement
+    device_class: PRESSURE
+    update_interval: 250ms
+    filters:
+      - calibrate_linear:
+          method: least_squares
+          datapoints:
+            - 0.4 -> 0
+            - 2.4 -> 0.4  # 2,4 Volt entsprechen 0,4 MPa
+      - multiply: 10  # Umrechnungsfaktor von MPa zu Bar 0,4 MPa = 4 bar
+
 number:
   - platform: modbus_controller
     modbus_controller_id: ${modbus_controller_id}
