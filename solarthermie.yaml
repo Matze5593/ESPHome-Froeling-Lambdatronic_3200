@@ -6,6 +6,8 @@ sensor:
     register_type: read
     address: 2611
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: U_WORD
     filters:
       - multiply: 0.5
@@ -17,6 +19,8 @@ sensor:
     register_type: read
     address: 2612
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: U_WORD
     filters:
       - multiply: 0.5
@@ -28,6 +32,8 @@ sensor:
     register_type: read
     address: 2601
     unit_of_measurement: "°C"
+    device_class: "temperature"
+    state_class: "measurement"
     value_type: U_WORD
     filters:
       - multiply: 0.5
@@ -38,7 +44,9 @@ sensor:
     id: ${name}_solar_wmz
     register_type: read
     address: 2610
-    unit_of_measurement: "kw"
+    unit_of_measurement: "kW"
+    device_class: "power"
+    state_class: "measurement"
     value_type: U_WORD
     filters:
       - multiply: 0.5
@@ -68,6 +76,8 @@ sensor:
     register_type: read
     address: 2609
     unit_of_measurement: "l/h"
+    device_class: "volume_flow_rate"
+    state_class: "measurement"
     value_type: U_WORD
 
   - platform: modbus_controller
@@ -75,17 +85,32 @@ sensor:
     name: "${name} Solar - Tagesertrag"
     id: ${name}_solarkollektor_ertrag
     register_type: read
-    address: 32619
-    unit_of_measurement: "kwh"
+    address: 32620
+    unit_of_measurement: "kWh"
+    device_class: "energy"
+    state_class: "measurement"
     value_type: U_WORD
 
   - platform: modbus_controller
     modbus_controller_id: ${modbus_controller_id}
     name: "${name} Solar - Gesamtertrag kWh"
-    id: ${name}_gesamtertrag_kwh
+    id: ${name}_gesamtertrag_Mwh
     register_type: read
     address: 2621
     unit_of_measurement: "kwh"
+    device_class: "energy"
+    state_class: "measurement"
+    value_type: U_WORD
+
+   - platform: modbus_controller
+    modbus_controller_id: ${modbus_controller_id}
+    name: "${name} Solar - Gesamtertrag kWh"
+    id: ${name}_gesamtertrag_Mwh
+    register_type: read
+    address: 2622
+    unit_of_measurement: "Mwh"
+    device_class: "energy"
+    state_class: "measurement"
     value_type: U_WORD
 
   - platform: modbus_controller
