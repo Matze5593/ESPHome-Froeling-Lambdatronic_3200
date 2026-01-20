@@ -60,3 +60,32 @@ sensor:
     value_type: U_WORD
     filters:
       - multiply: 0.1
+
+# Der Heizwert ist mit 4,8 kWh/Kg berechnet
+
+  - platform: template
+    name: "${name} Resetierbarer Verbrauch (kWh)"
+    id: ${name}_Resetierbarer_Verbrauch_kwh
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: measurement
+    accuracy_decimals: 1
+    lambda: |-
+      const float pellet_kwh_per_kg = 4.8f;  // Heizwert (kWh/kg) – bei Bedarf anpassen
+      if (isnan(id(${name}_Resetierbarer_kg_Zaehler).state)) return NAN;
+      return id(${name}_Resetierbarer_kg_Zaehler).state * pellet_kwh_per_kg;
+    update_interval: 60s
+
+  - platform: template
+    name: "${name} Pelletverbrauch Gesamt (kWh)"
+    id: ${name}_Pelletverbrauch_Gesamt_kwh
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    accuracy_decimals: 0
+    lambda: |-
+      const float pellet_kwh_per_kg = 4.8f;  // Heizwert (kWh/kg) – bei Bedarf anpassen
+      if (isnan(id(${name}_Pelletverbrauch_Gesamt).state)) return NAN;
+      // Pelletverbrauch_Gesamt ist in t -> *1000 = kg
+      return id(${name}_Pelletverbrauch_Gesamt).state * 1000.0f * pellet_kwh_per_kg;
+    update_interval: 60s
